@@ -1,10 +1,8 @@
-# [projects](http://idugalic.github.io/projects)/micro-ecommerce [![Build Status](https://travis-ci.org/idugalic/micro-ecommerce.svg?branch=master)](https://travis-ci.org/idugalic/micro-ecommerce)
-
 This project is intended to demonstrate end-to-end best practices for building a cloud native, microservice architecture using Spring Boot&Cloud.
 
 ## Table of Contents
 
-   * [Application 'Micro Ecommerce'](#application-micro-ecommerce)
+   * [Application 'Crowd Funding Service '](#application-Crowd Funding Service)
       * [What is cloud native](#what-is-cloud-native)
       * [Architecture](#architecture)
       * [Backing services](#backing-services)
@@ -13,23 +11,23 @@ This project is intended to demonstrate end-to-end best practices for building a
          * [Service registry (Eureka)](#service-registry-eureka)
          * [Authorization (Oauth2) server](#authorization-oauth2-server)
       * [Backend Microservices](#backend-microservices)
-         * [Catalog](#catalog)
-         * [Reviews](#reviews)
-         * [Recommendations](#recommendations)
-         * [Orders](#orders)
+         * [Pre-Investement-Validation](#pre-investement-check)
+         * [Post-Validation](#post-validation)
+         * [Transactional logs](#transactional logs)
+         * [Investment-Submission](#investment submission)
       * [Running Instructions](#running-instructions)
          * [Via maven (spring boot)](#via-maven-spring-boot)
          * [Via docker](#via-docker)
             * [Usage](#usage)
                * [Get a token:](#get-a-token)
-               * [Catalog service:](#catalog-service)
-               * [Reviews service:](#reviews-service)
-               * [Recommendations service:](#recommendations-service)
-               * [Orders service:](#orders-service)
-               * [Catalog service(proxy) :](#catalog-serviceproxy-)
-               * [Reviews service(proxy):](#reviews-serviceproxy)
-               * [Recommendations service(proxy):](#recommendations-serviceproxy)
-               * [Orders service(proxy):](#orders-serviceproxy)
+               * [Pre-Investement-Validation:](#catalog-service)
+               * [Post-Validation:](#reviews-service)
+               * [Transactional logs:](#recommendations-service)
+               * [Investment-Submission:](#orders-service)
+               * [Pre-Investement-Validation service(proxy) :](#Pre-Investement-Validation-serviceproxy-)
+               * [Post-Validation service(proxy):](#Post-Validation-serviceproxy)
+               * [Transactional logs service(proxy):](#Transactional logs-serviceproxy)
+               * [Investment-Submission service(proxy):](#Investment-Submission-serviceproxy)
                * [Mobile service (aggregate):](#mobile-service-aggregate)
       * [References and further reading](#references-and-further-reading)
 
@@ -84,28 +82,28 @@ For issuing tokens and authorize requests.
 
 While the backing services in the middle layer are still considered to be microservices, they solve a set of concerns that are purely operational and security-related. The business logic of this application sits almost entirely in our bottom layer.
 
-### Catalog
+### Pre-Investement-Validation
 
-The Catalog consists of categorized products. Products can be in one ore more categories, and category can contain one ore more products.
-Products and Categories are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data JPA repositories contained in the application.
+The Pre-Investement-Validation consists of categorized checks. Checks can be in one or more categories, and category can contain one ore more validations.
+This layer are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data JPA repositories contained in the application.
 
-### Reviews 
+### Post-Validation
 
-Review is entity(document) related to product by productId and to customer(user) by userName. The repository under this service is MongoDb
-Reviews are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data Mongo repositories contained in the application.
+Post-Validation is entity(document) related to Investement by InvestementId and to customer(user) by userName. The repository under this service is MongoDb
+Investements are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data Mongo repositories contained in the application.
 
-### Recommendations 
+### Transactional Log
 
-This service consists of Person and Product entities and Like relation entity that links them.
-Recommendations are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data Neo4j(Graph) repositories contained in the application.
+This service consists of Person and their investement entities and Like relation entity that links them.
+Transactions are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data Neo4j(Graph) repositories contained in the application.
 
-### Orders
+### Investement Submission
 
-The implementation consists of mainly two parts, the order and the payment part. The Orders are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data JPA repositories contained in the application. The Payment process  are implemented manually using a Spring MVC controller (PaymentController).
+The implementation consists of mainly two parts, the order and the payment part. The Investements are exposed as REST resources using Spring Data RESTs capability to automatically expose Spring Data JPA repositories contained in the application. The Submission process  are implemented manually using a Spring MVC controller (SubmissionController).
 
 We're using Spring Data REST to expose the OrderRepository as REST resource without additional effort.
 
-Spring Hateoas provides a generic Resource abstraction that we leverage to create hypermedia-driven representations. Spring Data REST also leverages this abstraction so that we can deploy ResourceProcessor implementations (e.g. PaymentorderResourceProcessor) to enrich the representations for Order instance with links to the PaymentController.
+Spring Hateoas provides a generic Resource abstraction that we leverage to create hypermedia-driven representations. Spring Data REST also leverages this abstraction so that we can deploy ResourceProcessor implementations (e.g. InvestementResourceProcessor) to enrich the representations for Investement instance with links to the InvestementController.
 
 
 ## Running Instructions
@@ -114,15 +112,15 @@ Spring Hateoas provides a generic Resource abstraction that we leverage to creat
 Make sure you have Neo4J and MongoDB running on localhost (on default ports).
 
 ```bash
-$ cd micro-ecommerce/microservices-config-server
+$ cd CrowdFundingService/microservices-config-server
 $ mvn spring-boot:run
 ```
 ```bash
-$ cd micro-ecommerce/microservices-eureka
+$ cd CrowdFundingService/microservices-eureka
 $ mvn spring-boot:run
 ```
 ```bash
-$ cd micro-ecommerce/microservices-authserver
+$ cd CrowdFundingService/microservices-authserver
 $ mvn spring-boot:run
 ```
 ...
@@ -132,7 +130,7 @@ $ mvn spring-boot:run
 ### Via docker
 
 ```bash
-$ cd micro-ecommerce
+$ cd CrowdFundingService
 $ mvn clean install
 $ docker-compose up --build -d
 ```
@@ -144,35 +142,35 @@ $ docker-compose up --build -d
 $ curl -X POST -vu acme:acmesecret http://localhost:9999/uaa/oauth/token -H "Accept: application/json" -d "password=idugalic&username=idugalic&grant_type=password&client_secret=acmesecret&client_id=acme"
 ```
 
-##### Catalog service: 
+##### Pre-Investement-Validation service: 
 ```bash
 $ curl http://localhost:8080/ -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Reviews service: 
+##### Post-Validation service: 
 ```bash
 $ curl http://localhost:8081/ -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Recommendations service: 
+##### Transactional Logs service: 
 ```bash
 $ curl http://localhost:8082/ -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Orders service: 
+##### Investement-Submission service: 
 ```bash
 $ curl http://localhost:8083/ -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Catalog service(proxy) : 
+##### Pre-Investement-Validation service(proxy) : 
 ```bash
 $ curl http://localhost:9000/catalog -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Reviews service(proxy): 
+##### Post-Validation service(proxy): 
 ```bash
 $ curl http://localhost:9000/reviews -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Recommendations service(proxy):
+##### Transactional Logs service(proxy):
 ```bash 
 $ curl http://localhost:9000/recommendations -H "Authorization: Bearer <YOUR TOKEN>"
 ```
-##### Orders service(proxy): 
+##### Investement-Submission service(proxy): 
 ```bash
 $ curl http://localhost:9000/orders -H "Authorization: Bearer <YOUR TOKEN>"
 ```
