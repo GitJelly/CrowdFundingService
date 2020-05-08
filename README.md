@@ -26,7 +26,7 @@ This project is intended to demonstrate end-to-end best practices for building a
                * [Investment-Submission:](#orders-service)
                * [Pre-Investement-Validation service(proxy) :](#Pre-Investement-Validation-serviceproxy-)
                * [Post-Validation service(proxy):](#Post-Validation-serviceproxy)
-               * [Transactional logs service(proxy):](#Transactional-logs-serviceproxy)
+               * [Transactional logs service(proxy):](#Transactional-logs serviceproxy)
                * [Investment-Submission service(proxy):](#Investment-Submission-serviceproxy)
                * [Mobile service (aggregate):](#mobile-service-aggregate)
       * [References and further reading](#references-and-further-reading)
