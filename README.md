@@ -2,7 +2,7 @@ This project is intended to demonstrate end-to-end best practices for building a
 
 ## Table of Contents
 
-   * [Application 'Crowd Funding Service '](#application-Crowd Funding Service)
+   * [Application 'Crowd Funding Service '](#application-Crowd-Funding Service)
       * [What is cloud native](#what-is-cloud-native)
       * [Architecture](#architecture)
       * [Backing services](#backing-services)
